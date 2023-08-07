@@ -9,7 +9,7 @@
 package main
 
 import (
-	"github.com/pokeyaro/gopkg/logger"
+	"github.com/pokeyaro/gopkg/go-logger"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module github.com/pokeyaro/gopkg/logger
+module github.com/pokeyaro/gopkg/go-logger
 
 go 1.20
 

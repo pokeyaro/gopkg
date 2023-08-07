@@ -16,7 +16,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/pokeyaro/gopkg/logger/utils"
+	"github.com/pokeyaro/gopkg/go-logger/utils"
 )
 
 // logCore represents the core parameters.

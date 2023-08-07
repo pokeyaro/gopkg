@@ -11,7 +11,7 @@ package benchmarks
 import (
 	"testing"
 
-	"github.com/pokeyaro/gopkg/logger"
+	"github.com/pokeyaro/gopkg/go-logger"
 )
 
 func BenchmarkEntry_Info_Time(b *testing.B) {

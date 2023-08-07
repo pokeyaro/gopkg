@@ -8,7 +8,7 @@ A simple, lightweight logging library.
 ## Installation
 
 ```bash
-go get -u github.com/pokeyaro/gopkg/logger
+go get -u github.com/pokeyaro/gopkg/go-logger
 ```
 
 
