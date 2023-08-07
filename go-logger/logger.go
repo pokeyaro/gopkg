@@ -36,7 +36,7 @@ type Entry struct {
 	trackAbsPath bool
 	timeFormat   DateFmt
 	enableColors bool
-	recordToFile recordRule
+	recordToFile RecordRule
 	lc           *logCore
 }
 
@@ -47,8 +47,8 @@ func New() *Entry {
 		trackAbsPath: false,
 		timeFormat:   FmtTime,
 		enableColors: false,
-		recordToFile: &fileRecord{
-			record: false,
+		recordToFile: &FileRecord{
+			Record: false,
 		},
 		lc: &logCore{
 			w: io.Discard,
@@ -64,10 +64,10 @@ func SetupDev() Logger {
 	entry.
 		SetTrackAbsPath(true).
 		SetEnableColors(true).
-		SetRecordToFile(&fileRecord{
-			record:  true,
-			pos:     "./logs/",
-			trigger: LevelWarn,
+		SetRecordToFile(&FileRecord{
+			Record:  true,
+			Pos:     "./logs/",
+			Trigger: LevelWarn,
 		})
 
 	timeFormat, err := entry.timeFormat.ParseTimeFormat()
@@ -87,10 +87,10 @@ func SetupProd() Logger {
 	entry.
 		SetLevel(LevelInfo).
 		SetTimeFormat(FmtDatetime).
-		SetRecordToFile(&fileRecord{
-			record:  true,
-			pos:     "/tmp/logs/",
-			trigger: LevelError,
+		SetRecordToFile(&FileRecord{
+			Record:  true,
+			Pos:     "/tmp/logs/",
+			Trigger: LevelError,
 		})
 
 	timeFormat, err := entry.timeFormat.ParseTimeFormat()

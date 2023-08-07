@@ -33,10 +33,10 @@ const (
 )
 
 // setLogger sets up the logger with the specified log level, date format, color options, and file logging configuration.
-func (lc *logCore) setLogger(l Level, dt int, isEnableColor bool, recordToFile recordRule) *logCore {
-	isRecordFile := recordToFile.shouldRecord()
-	triggerLevel := recordToFile.getTrigger()
-	filePath := recordToFile.getPosition()
+func (lc *logCore) setLogger(l Level, dt int, isEnableColor bool, recordToFile RecordRule) *logCore {
+	isRecordFile := recordToFile.ShouldRecord()
+	triggerLevel := recordToFile.GetTrigger()
+	filePath := recordToFile.GetPosition()
 
 	// Only records to file if the log level is equal to or higher than the trigger level
 	if isRecordFile && l >= triggerLevel {

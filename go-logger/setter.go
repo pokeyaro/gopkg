@@ -32,8 +32,8 @@ func (entry *Entry) SetEnableColors(enable bool) *Entry {
 	return entry
 }
 
-func (entry *Entry) SetRecordToFile(record recordRule) *Entry {
-	filePath := record.getPosition()
+func (entry *Entry) SetRecordToFile(record RecordRule) *Entry {
+	filePath := record.GetPosition()
 
 	if err := utils.Mkdir(filePath); err != nil {
 		panic(err.Error())

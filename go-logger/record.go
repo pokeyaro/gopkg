@@ -8,26 +8,26 @@
 
 package logger
 
-type recordRule interface {
-	shouldRecord() bool  // Whether to store the record or not
-	getPosition() string // Location for storing the record
-	getTrigger() Level   // Triggering level
+type RecordRule interface {
+	ShouldRecord() bool  // Whether to store the record or not
+	GetPosition() string // Location for storing the record
+	GetTrigger() Level   // Triggering level
 }
 
-type fileRecord struct {
-	record  bool
-	pos     string
-	trigger Level
+type FileRecord struct {
+	Record  bool
+	Pos     string
+	Trigger Level
 }
 
-func (r *fileRecord) shouldRecord() bool {
-	return r.record
+func (r *FileRecord) ShouldRecord() bool {
+	return r.Record
 }
 
-func (r *fileRecord) getPosition() string {
-	return r.pos
+func (r *FileRecord) GetPosition() string {
+	return r.Pos
 }
 
-func (r *fileRecord) getTrigger() Level {
-	return r.trigger
+func (r *FileRecord) GetTrigger() Level {
+	return r.Trigger
 }

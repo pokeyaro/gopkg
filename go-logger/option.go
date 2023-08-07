@@ -50,9 +50,9 @@ func WithEnableColors(isEnabled bool) EntryFunc {
 	}
 }
 
-func WithRecordToFile(record recordRule) EntryFunc {
+func WithRecordToFile(record RecordRule) EntryFunc {
 	return func(entry *Entry) {
-		filePath := record.getPosition()
+		filePath := record.GetPosition()
 		if err := utils.Mkdir(filePath); err != nil {
 			panic(err.Error())
 		}
