@@ -8,6 +8,10 @@
 
 package logger
 
+import (
+	"github.com/pokeyaro/gopkg/go-logger/utils"
+)
+
 func (entry *Entry) SetLevel(l Level) *Entry {
 	entry.level = l
 	return entry
@@ -25,5 +29,17 @@ func (entry *Entry) SetTimeFormat(dt DateFmt) *Entry {
 
 func (entry *Entry) SetEnableColors(enable bool) *Entry {
 	entry.enableColors = enable
+	return entry
+}
+
+func (entry *Entry) SetRecordToFile(record recordRule) *Entry {
+	filePath := record.getPosition()
+
+	if err := utils.Mkdir(filePath); err != nil {
+		panic(err.Error())
+	}
+
+	entry.recordToFile = record
+
 	return entry
 }

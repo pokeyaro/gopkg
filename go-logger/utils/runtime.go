@@ -9,6 +9,7 @@
 package utils
 
 import (
+	"path/filepath"
 	"runtime"
 )
 
@@ -19,4 +20,11 @@ func GetCallTrace(level int) (string, int) {
 	} else {
 		return "", 0
 	}
+}
+
+// GetCurrentDirectory retrieves the current directory path.
+func GetCurrentDirectory() string {
+	_, filename, _, _ := runtime.Caller(0)
+	dir := filepath.Dir(filename)
+	return dir
 }

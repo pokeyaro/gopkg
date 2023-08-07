@@ -10,6 +10,7 @@ package logger
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strconv"
@@ -21,19 +22,53 @@ import (
 
 // logCore represents the core parameters.
 type logCore struct {
-	logger *log.Logger
+	logger  *log.Logger
+	w       io.Writer
+	prefix  string
+	context []byte
 }
 
-// setLogger sets the logger with the specified log level, date format, and color options.
-func (lc *logCore) setLogger(l Level, dt int, isEnableColor bool) *logCore {
-	var defaultLogger *log.Logger
-	if isEnableColor {
-		prefixBgColor := lc.logRefColor(l, l.String()+colorReset+" ", false, false)
-		defaultLogger = log.New(color.Output, prefixBgColor, dt)
+const (
+	logFile = "records.log"
+)
+
+// setLogger sets up the logger with the specified log level, date format, color options, and file logging configuration.
+func (lc *logCore) setLogger(l Level, dt int, isEnableColor bool, recordToFile recordRule) *logCore {
+	isRecordFile := recordToFile.shouldRecord()
+	triggerLevel := recordToFile.getTrigger()
+	filePath := recordToFile.getPosition()
+
+	// Only records to file if the log level is equal to or higher than the trigger level
+	if isRecordFile && l >= triggerLevel {
+		file, err := os.OpenFile(filePath+logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		if l >= LevelError {
+			lc.w = io.MultiWriter(file, os.Stderr)
+		} else {
+			lc.w = io.MultiWriter(file, os.Stdout)
+		}
 	} else {
-		defaultLogger = log.New(color.Output, l.String()+" ", dt)
+		// Only terminal output
+		if isEnableColor {
+			lc.w = color.Output
+		} else {
+			lc.w = os.Stdout
+		}
 	}
-	lc.logger = defaultLogger
+
+	// Define prefix
+	if isEnableColor {
+		lc.prefix = lc.logRefColor(l, l.String()+colorReset+" ", false, false)
+	} else {
+		lc.prefix = l.String() + " "
+	}
+
+	// Default Logger
+	lc.logger = log.New(lc.w, lc.prefix, dt)
+
 	return lc
 }
 
@@ -48,7 +83,7 @@ func (lc *logCore) logf(entry *Entry, logLevel Level, format *string, args ...an
 		panic(err.Error())
 	}
 
-	lc.setLogger(logLevel, timeFormat, entry.enableColors)
+	lc.setLogger(logLevel, timeFormat, entry.enableColors, entry.recordToFile)
 
 	funcPos := lc.getFuncPos(entry.trackAbsPath)
 	if format == nil {

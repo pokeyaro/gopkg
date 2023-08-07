@@ -8,6 +8,10 @@
 
 package logger
 
+import (
+	"github.com/pokeyaro/gopkg/go-logger/utils"
+)
+
 type EntryFunc func(*Entry)
 type EntryChain []EntryFunc
 
@@ -43,5 +47,15 @@ func WithTimeFormat(dt DateFmt) EntryFunc {
 func WithEnableColors(isEnabled bool) EntryFunc {
 	return func(entry *Entry) {
 		entry.enableColors = isEnabled
+	}
+}
+
+func WithRecordToFile(record recordRule) EntryFunc {
+	return func(entry *Entry) {
+		filePath := record.getPosition()
+		if err := utils.Mkdir(filePath); err != nil {
+			panic(err.Error())
+		}
+		entry.recordToFile = record
 	}
 }

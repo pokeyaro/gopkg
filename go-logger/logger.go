@@ -10,6 +10,7 @@ package logger
 
 import (
 	"encoding/json"
+	"io"
 )
 
 // Logger is an interface that defines the logging methods.
@@ -35,8 +36,8 @@ type Entry struct {
 	trackAbsPath bool
 	timeFormat   DateFmt
 	enableColors bool
-
-	lc *logCore
+	recordToFile recordRule
+	lc           *logCore
 }
 
 // New creates a new instance of Entry with default settings.
@@ -46,7 +47,12 @@ func New() *Entry {
 		trackAbsPath: false,
 		timeFormat:   FmtTime,
 		enableColors: false,
-		lc:           &logCore{},
+		recordToFile: &fileRecord{
+			record: false,
+		},
+		lc: &logCore{
+			w: io.Discard,
+		},
 	}
 	return entry
 }
@@ -57,14 +63,19 @@ func SetupDev() Logger {
 
 	entry.
 		SetTrackAbsPath(true).
-		SetEnableColors(true)
+		SetEnableColors(true).
+		SetRecordToFile(&fileRecord{
+			record:  true,
+			pos:     "./logs/",
+			trigger: LevelWarn,
+		})
 
 	timeFormat, err := entry.timeFormat.ParseTimeFormat()
 	if err != nil {
 		panic(err.Error())
 	}
 
-	entry.lc.setLogger(LevelDebug, timeFormat, entry.enableColors)
+	entry.lc.setLogger(LevelDebug, timeFormat, entry.enableColors, entry.recordToFile)
 
 	return entry
 }
@@ -75,14 +86,19 @@ func SetupProd() Logger {
 
 	entry.
 		SetLevel(LevelInfo).
-		SetTimeFormat(FmtDatetime)
+		SetTimeFormat(FmtDatetime).
+		SetRecordToFile(&fileRecord{
+			record:  true,
+			pos:     "/tmp/logs/",
+			trigger: LevelError,
+		})
 
 	timeFormat, err := entry.timeFormat.ParseTimeFormat()
 	if err != nil {
 		panic(err.Error())
 	}
 
-	entry.lc.setLogger(LevelInfo, timeFormat, entry.enableColors)
+	entry.lc.setLogger(LevelInfo, timeFormat, entry.enableColors, entry.recordToFile)
 
 	return entry
 }
