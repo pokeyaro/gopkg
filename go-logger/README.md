@@ -8,7 +8,7 @@ A simple, lightweight logging library.
 ## Installation
 
 ```bash
-go get -u github.com/pokeyaro/gopkg/go-logger
+go get -u github.com/pokeyaro/gopkg/go-logger@master
 ```
 
 
@@ -33,7 +33,7 @@ go get -u github.com/pokeyaro/gopkg/go-logger
 package main
 
 import (
-	"github.com/pokeyaro/gopkg/logger"
+	"github.com/pokeyaro/gopkg/go-logger"
 )
 
 func main() {
