@@ -53,13 +53,20 @@ func main() {
 
 2. `go-logger` allows logging at the following levels (from highest to lowest):
 
-```textmate
-LevelFatal  #5  ColorRed  /  exit(1)
-LevelError  #4  ColorMagenta
-LevelWarn   #3  ColorYellow
-LevelInfo   #2  ColorBlue
-LevelDebug  #1  ColorRed
-```
+| NO. | Level | Color   | Remark   |
+|-----|-------|---------|----------|
+| #7  | Fatal | Magenta | exit(1)  |
+| #6  | Error | Red     |          |
+| #5  | Warn | Yellow  |          |
+| #4  | Notice | Green   |          |
+| #3  | Info | Cyan    |          |
+| #2  | Debug |  Blue   |          |
+| #1  | Trace |  Blue   |          |
+
+
+## Use Case
+
+[example](./example/example.go)
 
 
 ## Benchmarking

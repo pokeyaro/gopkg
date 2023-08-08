@@ -53,13 +53,20 @@ func main() {
 
 2. `go-logger` 允许在以下级别进行日志记录（从最高到最低）：
 
-```textmate
-LevelFatal  #5  ColorRed  /  exit(1)
-LevelError  #4  ColorMagenta
-LevelWarn   #3  ColorYellow
-LevelInfo   #2  ColorBlue
-LevelDebug  #1  ColorRed
-```
+| NO. | Level  | Color   | 备注     |
+|-----|--------|---------|----------|
+| #7  | Fatal  | 紫色    | exit(1)  |
+| #6  | Error  | 红色    |          |
+| #5  | Warn   | 黄色    |          |
+| #4  | Notice | 绿色    |          |
+| #3  | Info   | 青色    |          |
+| #2  | Debug  | 蓝色    |          |
+| #1  | Trace  | 蓝色    |          |
+
+
+## 代码示例
+
+[example](./example/example.go)
 
 
 ## 基准测试
