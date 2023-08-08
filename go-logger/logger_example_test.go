@@ -8,6 +8,36 @@
 
 package logger
 
+import (
+	"context"
+)
+
+func ExampleEntry_Trace() {
+	log := SetupProd()
+
+	log.Trace("This is the Trace method")
+
+	// Output:
+}
+
+func ExampleEntry_Tracef() {
+	log := SetupProd()
+
+	log.Tracef("This is the %s method", "Tracef")
+
+	// Output:
+}
+
+func ExampleEntry_CtxTracef() {
+	log := SetupProd()
+
+	ctx := context.TODO()
+
+	log.CtxTracef(ctx, "This is the %s method with context", "Tracef")
+
+	// Output:
+}
+
 func ExampleEntry_Debug() {
 	log := SetupProd()
 
@@ -19,7 +49,17 @@ func ExampleEntry_Debug() {
 func ExampleEntry_Debugf() {
 	log := SetupProd()
 
-	log.Debug("This is the %s method", "Debugf")
+	log.Debugf("This is the %s method", "Debugf")
+
+	// Output:
+}
+
+func ExampleEntry_CtxDebugf() {
+	log := SetupProd()
+
+	ctx := context.TODO()
+
+	log.CtxDebugf(ctx, "This is the %s method with context", "Debugf")
 
 	// Output:
 }
@@ -40,6 +80,42 @@ func ExampleEntry_Infof() {
 	// Output:
 }
 
+func ExampleEntry_CtxInfof() {
+	log := SetupProd()
+
+	ctx := context.TODO()
+
+	log.CtxInfof(ctx, "This is the %s method with context", "Infof")
+
+	// Output:
+}
+
+func ExampleEntry_Notice() {
+	log := SetupProd()
+
+	log.Notice("This is the Notice method")
+
+	// Output:
+}
+
+func ExampleEntry_Noticef() {
+	log := SetupProd()
+
+	log.Noticef("This is the %s method", "Noticef")
+
+	// Output:
+}
+
+func ExampleEntry_CtxNoticef() {
+	log := SetupProd()
+
+	ctx := context.TODO()
+
+	log.CtxNoticef(ctx, "This is the %s method with context", "Noticef")
+
+	// Output:
+}
+
 func ExampleEntry_Warn() {
 	log := SetupProd()
 
@@ -52,6 +128,16 @@ func ExampleEntry_Warnf() {
 	log := SetupProd()
 
 	log.Warnf("This is the %s method", "Warnf")
+
+	// Output:
+}
+
+func ExampleEntry_CtxWarnf() {
+	log := SetupProd()
+
+	ctx := context.TODO()
+
+	log.CtxWarnf(ctx, "This is the %s method with context", "Warnf")
 
 	// Output:
 }
@@ -72,6 +158,16 @@ func ExampleEntry_Errorf() {
 	// Output:
 }
 
+func ExampleEntry_CtxErrorf() {
+	log := SetupProd()
+
+	ctx := context.TODO()
+
+	log.CtxErrorf(ctx, "This is the %s method with context", "Errorf")
+
+	// Output:
+}
+
 func ExampleEntry_Fatal() {
 	log := SetupProd()
 
@@ -88,8 +184,18 @@ func ExampleEntry_Fatalf() {
 	// Output:
 }
 
-func ExampleEntry_Json() {
+func ExampleEntry_CtxFatalf() {
 	log := SetupProd()
+
+	ctx := context.TODO()
+
+	log.CtxFatalf(ctx, "This is the %s method with context", "Fatalf")
+
+	// Output:
+}
+
+func ExampleEntry_Json() {
+	log := New()
 
 	log.Json(LevelInfo, map[string]any{"name": "John", "age": 30, "roles": []string{"Developer", "DBA"}})
 

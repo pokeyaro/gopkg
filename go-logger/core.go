@@ -33,7 +33,7 @@ const (
 )
 
 // setLogger sets up the logger with the specified log level, date format, color options, and file logging configuration.
-func (lc *logCore) setLogger(l Level, dt int, isEnableColor bool, recordToFile RecordRule) *logCore {
+func (lc *logCore) setLogger(l Level, dt int, isColorful bool, recordToFile RecordRule) *logCore {
 	isRecordFile := recordToFile.ShouldRecord()
 	triggerLevel := recordToFile.GetTrigger()
 	filePath := recordToFile.GetPosition()
@@ -52,7 +52,7 @@ func (lc *logCore) setLogger(l Level, dt int, isEnableColor bool, recordToFile R
 		}
 	} else {
 		// Only terminal output
-		if isEnableColor {
+		if isColorful {
 			lc.w = color.Output
 		} else {
 			lc.w = os.Stdout
@@ -60,7 +60,7 @@ func (lc *logCore) setLogger(l Level, dt int, isEnableColor bool, recordToFile R
 	}
 
 	// Define prefix
-	if isEnableColor {
+	if isColorful {
 		lc.prefix = lc.logRefColor(l, l.String()+colorReset+" ", false, false)
 	} else {
 		lc.prefix = l.String() + " "
@@ -83,18 +83,18 @@ func (lc *logCore) logf(entry *Entry, logLevel Level, format *string, args ...an
 		panic(err.Error())
 	}
 
-	lc.setLogger(logLevel, timeFormat, entry.enableColors, entry.recordToFile)
+	lc.setLogger(logLevel, timeFormat, entry.isColorful, entry.recordToFile)
 
 	funcPos := lc.getFuncPos(entry.trackAbsPath)
 	if format == nil {
 		contentText := "%+v"
-		if entry.enableColors {
+		if entry.isColorful {
 			contentText = lc.logRefColor(logLevel, "%+v", true, false)
 		}
 		lc.logger.Printf(funcPos+contentText, fmt.Sprint(args...))
 	} else {
 		contentText := *format
-		if entry.enableColors {
+		if entry.isColorful {
 			contentText = lc.logRefColor(logLevel, *format, true, false)
 		}
 		lc.logger.Printf(funcPos+contentText, args...)

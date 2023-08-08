@@ -28,7 +28,7 @@ func (entry *Entry) SetTimeFormat(dt DateFmt) *Entry {
 }
 
 func (entry *Entry) SetEnableColors(enable bool) *Entry {
-	entry.enableColors = enable
+	entry.isColorful = enable
 	return entry
 }
 

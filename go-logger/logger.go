@@ -9,25 +9,36 @@
 package logger
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 )
 
-// Logger is an interface that defines the logging methods.
+// Logger is a logger interface that provides logging function with levels.
 type Logger interface {
+	Trace(args ...any)
 	Debug(args ...any)
 	Info(args ...any)
+	Notice(args ...any)
 	Warn(args ...any)
 	Error(args ...any)
 	Fatal(args ...any)
 
+	Tracef(format string, args ...any)
 	Debugf(format string, args ...any)
 	Infof(format string, args ...any)
+	Noticef(format string, args ...any)
 	Warnf(format string, args ...any)
 	Errorf(format string, args ...any)
 	Fatalf(format string, args ...any)
 
-	Json(l Level, args any)
+	CtxTracef(ctx context.Context, format string, args ...any)
+	CtxDebugf(ctx context.Context, format string, args ...any)
+	CtxInfof(ctx context.Context, format string, args ...any)
+	CtxNoticef(ctx context.Context, format string, args ...any)
+	CtxWarnf(ctx context.Context, format string, args ...any)
+	CtxErrorf(ctx context.Context, format string, args ...any)
+	CtxFatalf(ctx context.Context, format string, args ...any)
 }
 
 // Entry represents the configuration options for a logger entry.
@@ -42,7 +53,7 @@ type Entry struct {
 	timeFormat DateFmt
 
 	// Indicates whether to enable colors in log output
-	enableColors bool
+	isColorful bool
 
 	// The rule for logging records to a file
 	recordToFile RecordRule
@@ -54,10 +65,10 @@ type Entry struct {
 // New creates a new instance of Entry with default settings.
 func New() *Entry {
 	entry := &Entry{
-		level:        LevelDebug,
+		level:        LevelTrace,
 		trackAbsPath: false,
 		timeFormat:   FmtTime,
-		enableColors: false,
+		isColorful:   false,
 		recordToFile: &FileRecord{
 			ShouldRec: false,
 		},
@@ -68,11 +79,12 @@ func New() *Entry {
 	return entry
 }
 
-// SetupDev configures the logger for development environment.
+// SetupDev configures the logger for the development environment and returns an interface type, Logger.
 func SetupDev() Logger {
 	entry := New()
 
 	entry.
+		SetLevel(LevelDebug).
 		SetTrackAbsPath(true).
 		SetEnableColors(true).
 		SetRecordToFile(&FileRecord{
@@ -86,12 +98,12 @@ func SetupDev() Logger {
 		panic(err.Error())
 	}
 
-	entry.lc.setLogger(LevelDebug, timeFormat, entry.enableColors, entry.recordToFile)
+	entry.lc.setLogger(LevelDebug, timeFormat, entry.isColorful, entry.recordToFile)
 
 	return entry
 }
 
-// SetupProd configures the logger for production environment.
+// SetupProd configures the logger for the production environment and returns an interface type, Logger.
 func SetupProd() Logger {
 	entry := New()
 
@@ -109,9 +121,14 @@ func SetupProd() Logger {
 		panic(err.Error())
 	}
 
-	entry.lc.setLogger(LevelInfo, timeFormat, entry.enableColors, entry.recordToFile)
+	entry.lc.setLogger(LevelInfo, timeFormat, entry.isColorful, entry.recordToFile)
 
 	return entry
+}
+
+// Trace logs messages at Trace level.
+func (entry *Entry) Trace(args ...any) {
+	entry.lc.logf(entry, LevelTrace, nil, args...)
 }
 
 // Debug logs messages at Debug level.
@@ -122,6 +139,11 @@ func (entry *Entry) Debug(args ...any) {
 // Info logs messages at Info level.
 func (entry *Entry) Info(args ...any) {
 	entry.lc.logf(entry, LevelInfo, nil, args...)
+}
+
+// Notice logs messages at Notice level.
+func (entry *Entry) Notice(args ...any) {
+	entry.lc.logf(entry, LevelNotice, nil, args...)
 }
 
 // Warn logs messages at Warn level.
@@ -139,6 +161,11 @@ func (entry *Entry) Fatal(args ...any) {
 	entry.lc.logf(entry, LevelFatal, nil, args...)
 }
 
+// Tracef logs formatted messages at Trace level.
+func (entry *Entry) Tracef(format string, args ...any) {
+	entry.lc.logf(entry, LevelTrace, &format, args...)
+}
+
 // Debugf logs formatted messages at Debug level.
 func (entry *Entry) Debugf(format string, args ...any) {
 	entry.lc.logf(entry, LevelDebug, &format, args...)
@@ -147,6 +174,11 @@ func (entry *Entry) Debugf(format string, args ...any) {
 // Infof logs formatted messages at Info level.
 func (entry *Entry) Infof(format string, args ...any) {
 	entry.lc.logf(entry, LevelInfo, &format, args...)
+}
+
+// Noticef logs formatted messages at Notice level.
+func (entry *Entry) Noticef(format string, args ...any) {
+	entry.lc.logf(entry, LevelNotice, &format, args...)
 }
 
 // Warnf logs formatted messages at Warn level.
@@ -164,7 +196,43 @@ func (entry *Entry) Fatalf(format string, args ...any) {
 	entry.lc.logf(entry, LevelFatal, &format, args...)
 }
 
-// Json logs a JSON formatted message at the specified level.
+// CtxTracef logs a formatted trace-level message with context.
+func (entry *Entry) CtxTracef(ctx context.Context, format string, args ...any) {
+	entry.lc.logf(entry, LevelTrace, &format, args...)
+}
+
+// CtxDebugf logs a formatted debug-level message with context.
+func (entry *Entry) CtxDebugf(ctx context.Context, format string, args ...any) {
+	entry.lc.logf(entry, LevelDebug, &format, args...)
+}
+
+// CtxInfof logs a formatted info-level message with context.
+func (entry *Entry) CtxInfof(ctx context.Context, format string, args ...any) {
+	entry.lc.logf(entry, LevelInfo, &format, args...)
+}
+
+// CtxNoticef logs a formatted notice-level message with context.
+func (entry *Entry) CtxNoticef(ctx context.Context, format string, args ...any) {
+	entry.lc.logf(entry, LevelNotice, &format, args...)
+}
+
+// CtxWarnf logs a formatted warn-level message with context.
+func (entry *Entry) CtxWarnf(ctx context.Context, format string, args ...any) {
+	entry.lc.logf(entry, LevelWarn, &format, args...)
+}
+
+// CtxErrorf logs a formatted error-level message with context.
+func (entry *Entry) CtxErrorf(ctx context.Context, format string, args ...any) {
+	entry.lc.logf(entry, LevelError, &format, args...)
+}
+
+// CtxFatalf logs a formatted fatal-level message with context.
+func (entry *Entry) CtxFatalf(ctx context.Context, format string, args ...any) {
+	entry.lc.logf(entry, LevelFatal, &format, args...)
+}
+
+// Json logs a JSON representation of the provided arguments at the specified log level.
+// It requires an instance of Entry created with the New() function.
 func (entry *Entry) Json(l Level, args any) {
 	bs, err := json.Marshal(args)
 	if err != nil {

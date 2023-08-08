@@ -23,28 +23,34 @@ type colorFunc struct {
 const (
 	colorReset = "\033[0m"
 
-	fgColorDebug    = color.FgHiCyan
-	fgColorInfo     = color.FgHiBlue
+	fgColorTrace    = color.FgHiBlue
+	fgColorDebug    = color.FgHiBlue
+	fgColorInfo     = color.FgHiCyan
+	fgColorNotice   = color.FgHiGreen
 	fgColorWarn     = color.FgHiYellow
-	fgColorError    = color.FgHiMagenta
-	fgColorFatal    = color.FgHiRed
+	fgColorError    = color.FgHiRed
+	fgColorFatal    = color.FgHiMagenta
 	fgColorDefault  = color.FgHiBlack
 	fgColorHttpOk   = color.FgGreen
 	fgColorHttpFail = color.FgRed
 
-	bgColorDebug    = color.BgHiCyan
-	bgColorInfo     = color.BgHiBlue
+	bgColorTrace    = color.BgBlue
+	bgColorDebug    = color.BgHiBlue
+	bgColorInfo     = color.BgHiCyan
+	bgColorNotice   = color.BgHiGreen
 	bgColorWarn     = color.BgHiYellow
-	bgColorError    = color.BgHiMagenta
-	bgColorFatal    = color.BgHiRed
+	bgColorError    = color.BgHiRed
+	bgColorFatal    = color.BgHiMagenta
 	bgColorDefault  = color.BgHiBlack
 	bgColorHttpOk   = color.BgGreen
 	bgColorHttpFail = color.BgRed
 )
 
 var (
+	fgTrace    = color.New(fgColorTrace).SprintFunc()
 	fgDebug    = color.New(fgColorDebug).SprintFunc()
 	fgInfo     = color.New(fgColorInfo).SprintFunc()
+	fgNotice   = color.New(fgColorNotice).SprintFunc()
 	fgWarn     = color.New(fgColorWarn).SprintFunc()
 	fgError    = color.New(fgColorError).SprintFunc()
 	fgFatal    = color.New(fgColorFatal).SprintFunc()
@@ -52,9 +58,11 @@ var (
 	fgHttpOk   = color.New(fgColorHttpOk).SprintFunc()
 	fgHttpFail = color.New(fgColorHttpFail).SprintFunc()
 
+	bgTrace    = color.New(bgColorTrace).SprintFunc()
 	bgDebug    = color.New(bgColorDebug).SprintFunc()
 	bgInfo     = color.New(bgColorInfo).SprintFunc()
 	bgWarn     = color.New(bgColorWarn).SprintFunc()
+	bgNotice   = color.New(bgColorNotice).SprintFunc()
 	bgError    = color.New(bgColorError).SprintFunc()
 	bgFatal    = color.New(bgColorFatal).SprintFunc()
 	bgDefault  = color.New(bgColorDefault).SprintFunc()
@@ -64,8 +72,10 @@ var (
 
 var (
 	colorMapFunc = map[string]colorFunc{
+		"trace":    colorFunc{bg: bgTrace, fg: fgTrace},
 		"debug":    colorFunc{bg: bgDebug, fg: fgDebug},
 		"info":     colorFunc{bg: bgInfo, fg: fgInfo},
+		"notice":   colorFunc{bg: bgNotice, fg: fgNotice},
 		"warn":     colorFunc{bg: bgWarn, fg: fgWarn},
 		"error":    colorFunc{bg: bgError, fg: fgError},
 		"fatal":    colorFunc{bg: bgFatal, fg: fgFatal},
@@ -86,7 +96,7 @@ func (lc *logCore) logRefColor(logLevel Level, format string, args ...bool) stri
 	// If it's an HTTP log
 	if len(args) == 2 && args[1] {
 		switch logLevel {
-		case LevelDebug, LevelInfo, LevelWarn:
+		case LevelTrace, LevelDebug, LevelInfo, LevelNotice, LevelWarn:
 			cs = lc.colorSelector("httpOK")
 		case LevelError, LevelFatal:
 			cs = lc.colorSelector("httpFail")
@@ -96,10 +106,14 @@ func (lc *logCore) logRefColor(logLevel Level, format string, args ...bool) stri
 	} else {
 		// Log base color
 		switch logLevel {
+		case LevelTrace:
+			cs = lc.colorSelector("trace")
 		case LevelDebug:
 			cs = lc.colorSelector("debug")
 		case LevelInfo:
 			cs = lc.colorSelector("info")
+		case LevelNotice:
+			cs = lc.colorSelector("notice")
 		case LevelWarn:
 			cs = lc.colorSelector("warn")
 		case LevelError:

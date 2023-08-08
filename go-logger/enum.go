@@ -19,8 +19,10 @@ type Level uint8
 
 const (
 	_ Level = iota
+	LevelTrace
 	LevelDebug
 	LevelInfo
+	LevelNotice
 	LevelWarn
 	LevelError
 	LevelFatal
@@ -28,11 +30,13 @@ const (
 
 var (
 	levelMapText = map[Level]string{
-		LevelDebug: "debug",
-		LevelInfo:  "info",
-		LevelWarn:  "warn",
-		LevelError: "error",
-		LevelFatal: "fatal",
+		LevelTrace:  "trace",
+		LevelDebug:  "debug",
+		LevelInfo:   "info",
+		LevelNotice: "notice",
+		LevelWarn:   "warn",
+		LevelError:  "error",
+		LevelFatal:  "fatal",
 	}
 )
 
