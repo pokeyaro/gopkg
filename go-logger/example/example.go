@@ -1,11 +1,8 @@
-// Package logger provides a simple, lightweight logging library for Go.
-//
-// It offers a convenient way to log messages at different levels (Debug, Info, Warn, Error, Fatal)
-// and supports formatted logging. Additionally, it includes a JSON logging feature for structured logging.
-//
-// Author: Pokeya
-// License: MIT
+// Copyright 2023 Pokeya. All rights reserved.
+// Use of this source code is governed by a MIT
+// license that can be found in the LICENSE file.
 
+// Package logger provides a simple, lightweight logging library for Go.
 package main
 
 import (
