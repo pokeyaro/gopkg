@@ -8,26 +8,31 @@
 
 package logger
 
+// RecordRule defines an interface for configuring logging rules.
 type RecordRule interface {
-	ShouldRecord() bool  // Whether to store the record or not
-	GetPosition() string // Location for storing the record
-	GetTrigger() Level   // Triggering level
+	ShouldRecord() bool  // Indicates whether to store the log record or not.
+	GetPosition() string // Returns the location for storing the log record.
+	GetTrigger() Level   // Returns the triggering level for logging.
 }
 
+// FileRecord represents the configuration for file logging.
 type FileRecord struct {
-	Record  bool
-	Pos     string
-	Trigger Level
+	ShouldRec bool   // Indicates whether file logging is enabled or not
+	FilePath  string // The file path where logs will be stored
+	Trigger   Level  // The trigger level for file logging
 }
 
-func (r *FileRecord) ShouldRecord() bool {
-	return r.Record
+// ShouldRecord returns whether file logging is enabled or not.
+func (fr *FileRecord) ShouldRecord() bool {
+	return fr.ShouldRec
 }
 
-func (r *FileRecord) GetPosition() string {
-	return r.Pos
+// GetPosition returns the file path where logs will be stored.
+func (fr *FileRecord) GetPosition() string {
+	return fr.FilePath
 }
 
-func (r *FileRecord) GetTrigger() Level {
-	return r.Trigger
+// GetTrigger returns the trigger level for file logging.
+func (fr *FileRecord) GetTrigger() Level {
+	return fr.Trigger
 }

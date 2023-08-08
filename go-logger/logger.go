@@ -30,14 +30,25 @@ type Logger interface {
 	Json(l Level, args any)
 }
 
-// Entry exposes the configuration settings.
+// Entry represents the configuration options for a logger entry.
 type Entry struct {
-	level        Level
+	// The log level for the entry
+	level Level
+
+	// Indicates whether to track absolute file paths
 	trackAbsPath bool
-	timeFormat   DateFmt
+
+	// The date format for log timestamps
+	timeFormat DateFmt
+
+	// Indicates whether to enable colors in log output
 	enableColors bool
+
+	// The rule for logging records to a file
 	recordToFile RecordRule
-	lc           *logCore
+
+	// The underlying log core instance
+	lc *logCore
 }
 
 // New creates a new instance of Entry with default settings.
@@ -48,7 +59,7 @@ func New() *Entry {
 		timeFormat:   FmtTime,
 		enableColors: false,
 		recordToFile: &FileRecord{
-			Record: false,
+			ShouldRec: false,
 		},
 		lc: &logCore{
 			w: io.Discard,
@@ -65,9 +76,9 @@ func SetupDev() Logger {
 		SetTrackAbsPath(true).
 		SetEnableColors(true).
 		SetRecordToFile(&FileRecord{
-			Record:  true,
-			Pos:     "./logs/",
-			Trigger: LevelWarn,
+			ShouldRec: true,
+			FilePath:  "./logs/",
+			Trigger:   LevelWarn,
 		})
 
 	timeFormat, err := entry.timeFormat.ParseTimeFormat()
@@ -88,9 +99,9 @@ func SetupProd() Logger {
 		SetLevel(LevelInfo).
 		SetTimeFormat(FmtDatetime).
 		SetRecordToFile(&FileRecord{
-			Record:  true,
-			Pos:     "/tmp/logs/",
-			Trigger: LevelError,
+			ShouldRec: true,
+			FilePath:  "/tmp/logs/",
+			Trigger:   LevelError,
 		})
 
 	timeFormat, err := entry.timeFormat.ParseTimeFormat()

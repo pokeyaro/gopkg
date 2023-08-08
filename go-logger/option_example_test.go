@@ -16,6 +16,11 @@ func ExampleEntry_Optional() {
 		WithTrackAbsPath(true),
 		WithTimeFormat(FmtDatetime),
 		WithEnableColors(true),
+		WithRecordToFile(&FileRecord{
+			ShouldRec: true,
+			FilePath:  "./tmp/logs/",
+			Trigger:   LevelWarn,
+		}),
 	)
 
 	// Output:
