@@ -46,7 +46,7 @@ func WithTimeFormat(dt DateFmt) EntryFunc {
 
 func WithEnableColors(isEnabled bool) EntryFunc {
 	return func(entry *Entry) {
-		entry.enableColors = isEnabled
+		entry.isColorful = isEnabled
 	}
 }
 

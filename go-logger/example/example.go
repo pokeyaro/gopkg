@@ -12,30 +12,62 @@ import (
 	"github.com/pokeyaro/gopkg/go-logger"
 )
 
-func main() {
+type User struct {
+	Name  string   `json:"name"`
+	Age   int      `json:"age"`
+	Roles []string `json:"roles"`
+}
+
+var (
+	_str    = "hello~"
+	_int    = 123
+	_bool   = true
+	_bytes  = []byte{'h', 'i'}
+	_map    = map[string]string{"aaa": "123", "bbb": "456"}
+	_struct = User{Name: "John", Age: 30, Roles: []string{"Admin", "User"}}
+)
+
+func egWithAnyType() {
 	// You can choose dev or prod to start
 	log := logger.SetupDev()
 
-	type User struct {
-		Name  string   `json:"name"`
-		Age   int      `json:"age"`
-		Roles []string `json:"roles"`
-	}
-
 	// Support printing multiple data types
-	log.Debug("hello~")
-	log.Debug(123)
-	log.Debug(true)
-	log.Debug([]rune{'你', '好'})
-	log.Debug(map[string]string{"aaa": "123", "bbb": "456"})
-	log.Debug(User{Name: "John", Age: 30})
+	log.Debug(_str)
+	log.Debug(_int)
+	log.Debug(_bool)
+	log.Debug(_bytes)
+	log.Debug(_map)
+	log.Debug(&_struct)
+}
 
-	// Support printing json
-	log.Json(logger.LevelWarn, User{Name: "John", Age: 30, Roles: []string{"Admin", "User"}})
+func egWithPrintfStyle() {
+	// You can choose dev or prod to start
+	log := logger.SetupDev()
 
 	// Support content format
-	log.Infof("info %s %d", "msg...", 1)
-	log.Warnf("warn %s %d", "msg...", 2)
-	log.Errorf("error %s %d", "msg...", 3)
-	log.Fatalf("fatal %s...", "end!!!")
+	log.Tracef("trace %s %d", "level: #", 1)
+	log.Debugf("debug %s %d", "level: #", 2)
+	log.Infof("info %s %d", "level: #", 3)
+	log.Noticef("notice %s %d", "level: #", 4)
+	log.Warnf("warn %s %d", "level: #", 5)
+	log.Errorf("error %s %d", "level: #", 6)
+	// log.Fatalf("fatal %s %d", "level: #", 6)
+}
+
+func egWithJson() {
+	// The Json method can only be created using the New() function
+	log := logger.New().SetRecordToFile(
+		&logger.FileRecord{ShouldRec: true, FilePath: "/tmp/logs/", Trigger: logger.LevelWarn},
+	)
+
+	// Support printing json
+	log.Json(logger.LevelWarn, _struct)
+}
+
+func main() {
+	egWithAnyType()
+
+	egWithPrintfStyle()
+
+	egWithJson()
 }
