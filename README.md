@@ -13,9 +13,10 @@ go get -u github.com/pokeyaro/gopkg/<sub-package>
 
 ## Catalogs
 
-| Module   | Description | Documentation                               | Date     |
-|---------|--------------|---------------------------------------------|----------|
-| logger  | Logging package | [logger Usage Guide](./go-logger/README.md) | 08/07/23 |
+| Module   | Description | Documentation                                 | Date     |
+|---------|--------------|-----------------------------------------------|----------|
+| logger  | Logging package | [logger Usage Guide](./go-logger/README.md)   | 08/07/23 |
+| suprelog | Logging package | [suprelog Usage Guide](./suprelog/README.md) | 23/08/21 |
 
 
 ## Subpackage Management
