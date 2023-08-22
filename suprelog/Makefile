@@ -21,8 +21,8 @@ gen:
 
 # Merge target: merge dev branch into master branch
 merge:
-	git checkout master
+	git switch master
 	git pull origin master
 	git merge dev
 	git push origin master
-	git checkout dev
+	git switch dev
