@@ -1,9 +1,9 @@
-# Makefile for go-logger
+# Makefile for suprelog
 # Author: Pokeya
 # Version: 1.0
 
 # Set phony targets
-.PHONY: merge help
+.PHONY: merge gen help
 
 # Define variable
 LOCAL_PACKAGE := github.com/pokeyaro/gopkg/suprelog
@@ -13,7 +13,11 @@ LOCAL_PACKAGE := github.com/pokeyaro/gopkg/suprelog
 .DEFAULT_GOAL := help
 help:
 	@echo "Usage:"
+	@echo "  make gen           Generate code using code generation tool"
 	@echo "  make merge         Merge dev branch into master branch"
+
+gen:
+	go generate ./....
 
 # Merge target: merge dev branch into master branch
 merge:
